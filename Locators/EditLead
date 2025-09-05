@@ -1,0 +1,45 @@
+import test, { expect } from '@playwright/test'
+test.use({ headless: false }); // 👈 force browser to be visible for this test
+
+
+test("EditLead", async({page})=>{
+        
+    await page.goto("http://leaftaps.com/opentaps/control/main")
+    await page.locator('#username').fill("Demosalesmanager")
+    
+    await page.locator('#password').fill('crmsfa')
+    await page.locator('[type=submit]').click()
+    await page.locator("//a[normalize-space(text())='CRM/SFA']").click();
+    await page.locator("//a[text()='Leads']").click()
+
+    await page.locator("//a[text()='Find Leads']").click()
+    await page.locator("//span[text()='Name and ID']/parent::Span/../../../../../../following-sibling::div/div/div/div/div/div/label[text()='First name:']/../child::div[1]/input").fill('Vijay first name')
+    await page.locator("//button[text()='Find Leads']").click()
+        await page.waitForTimeout(4000)
+
+    await page.locator("(//a[text()='Editing comapny name']/ancestor::div)[23]/table/tbody/tr/td/div/a[text()='15211']").click()
+    await page.locator("//a[text()='Edit']").click()
+    await page.locator("#updateLeadForm_companyName").clear()
+    await page.locator("#updateLeadForm_companyName").fill("Editing comapny name")
+    await page.locator("#updateLeadForm_annualRevenue").clear()
+    await page.locator("#updateLeadForm_annualRevenue").fill("3000")
+    await page.locator("#updateLeadForm_departmentName").clear()
+    await page.locator("#updateLeadForm_departmentName").fill("Editing Department Name")
+    await page.locator("[name=description]").fill("Checking the values")
+    await page.locator("//input[@value='Update']").click()
+
+
+    const pageTile=await page.title()
+    console.log("Pagw Title is:" + pageTile)
+
+    await expect(page.locator('#viewLead_companyName_sp')).toContainText('Editing comapny name')
+    await expect(page.locator("#viewLead_departmentName_sp")).toHaveText('Editing Department Name')
+
+
+
+
+
+
+
+
+})

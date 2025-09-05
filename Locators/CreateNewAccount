@@ -1,0 +1,47 @@
+import test, { expect } from '@playwright/test'
+test.use({ headless: false }); // 👈 force browser to be visible for this test
+
+
+test("EditLead", async({page})=>{
+        
+    await page.goto("https://login.salesforce.com/")
+    await page.getByLabel("Username").fill('vidyar@testleaf.com')
+    await page.getByLabel("Password").fill('Sales@123')
+    await page.locator("#Login").click()
+    await page.waitForTimeout(5000)
+
+
+    const title=await page.title()
+    console.log("Page title is:" + title)
+
+    //check title and url
+    await expect(page).toHaveTitle(title)
+    await expect(page).toHaveURL("https://testleaf-da-dev-ed.develop.lightning.force.com/lightning/setup/SetupOneHome/home");
+    await page.waitForTimeout(2000)
+
+    await page.locator(".slds-icon-waffle").click()
+    await page.waitForTimeout(2000)
+
+    await page.getByText("View All").click()
+    await page.waitForTimeout(2000)
+
+    await page.getByPlaceholder("Search apps or items...").fill("Service")
+    await page.waitForTimeout(4000)
+
+    await page.locator("(//mark[text()='Service'])[2]").click()
+    await page.locator("(//span[text()='Accounts'])[1]").click()
+
+    await page.locator("//div[text()='New']").click()
+    await page.locator("[name=Name]").fill("Vijaym Salesforce Account")
+    await page.locator("//button[text()='Save']").click()
+
+const toast = page.getByText(/Account "Vijaym Salesforce Account" was created/);
+await expect(toast).toBeVisible({ timeout: 5000 });
+})
+
+
+
+
+
+
+

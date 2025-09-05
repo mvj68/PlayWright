@@ -1,0 +1,36 @@
+import test, { expect } from '@playwright/test'
+test.use({ headless: false }); // 👈 force browser to be visible for this test
+
+test("Create lead",async({page})=>{
+    
+    await page.goto("http://leaftaps.com/opentaps/control/main")
+    await page.locator('#username').fill("Demosalesmanager")
+    await page.locator('#password').fill('crmsfa')
+    await page.locator('[type=submit]').click()
+    await page.locator("//a[normalize-space(text())='CRM/SFA']").click();
+
+    await page.locator("//a[text()='Leads']").click()
+    await page.locator("//a[text()='Create Lead']").click()
+    await page.locator("#createLeadForm_companyName").fill('VijayCompany')
+    await page.locator("#createLeadForm_firstName").fill("Vijay first name")
+    await page.locator("#createLeadForm_lastName").fill("#createLeadForm_lastName")
+    await page.locator("[name=personalTitle]").fill("Mr")
+    await page.locator("[name=generalProfTitle]").fill("Vijay title")
+    await page.locator("[name=annualRevenue]").fill("1000")
+    await page.locator("#createLeadForm_departmentName").fill("Vijay department")
+    await page.locator("#createLeadForm_primaryPhoneNumber").fill("9876543210")
+    await page.locator("[name=submitButton]").click()
+    await page.waitForTimeout(4000)
+
+    const pageTitle=await page.title()
+    console.log("Page Title is:" + pageTitle)
+
+    await expect(page.locator('#viewLead_companyName_sp')).toContainText('VijayCompany')
+    await expect(page.locator('#viewLead_firstName_sp')).toHaveText('Vijay first name')
+    await expect(page.locator('#viewLead_statusId_sp')).toHaveText("Assigned")
+
+
+
+
+
+})

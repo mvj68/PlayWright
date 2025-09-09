@@ -1,0 +1,39 @@
+import test, { expect } from '@playwright/test'
+import { text } from 'stream/consumers';
+test.use({ headless: false }); // 👈 force browser to be visible for this test
+
+
+test("Frame", async ({page})=>{
+
+    await page. goto("https://leafground.com/frame.xhtml")
+
+const iframe = page.frameLocator('iframe').nth(0);
+const beforeText = await iframe.locator("#Click").innerText();
+console.log("Before handle frame: " + beforeText);
+const afterClick=await iframe.locator("#Click")
+await afterClick.click()
+const buttonText = await afterClick.innerText();
+//Assert the text changed after clicking the button
+console.log("After handle frame: " + buttonText);
+await expect(afterClick).toHaveText("Hurray! You Clicked Me."); 
+
+console.log('Total Frame count is', page.frames().length);
+
+  const outerFrame = page.frameLocator('iframe').nth(2);
+  const nestedFrame = outerFrame.frameLocator('iframe');
+  const nestedButton = nestedFrame.locator('#Click');
+
+  const beforeText2 = await nestedButton.innerText();
+  console.log('Before click (nested frame):', beforeText2);
+
+  await nestedButton.click();
+  const afterClickNested = await nestedButton.innerText()
+  console.log("After handle Nested : " + afterClickNested);
+
+  await expect(nestedButton).toHaveText('Hurray! You Clicked Me.');
+
+
+
+
+
+})

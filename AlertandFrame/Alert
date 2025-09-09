@@ -1,0 +1,29 @@
+
+import test, { expect } from '@playwright/test'
+import { title } from 'process';
+test.use({ headless: false }); // 👈 force browser to be visible for this test
+
+test(" Alert interactions using Playwright.", async({page}) =>
+{ 
+    page.on('dialog', alertt => {
+    const type= alertt.type()
+    
+    console.log("Alert type is :"+  type) // Get the type 
+    console.log("Alert Message is :"+  alertt.message())  // Get the message 
+    alertt.accept()    // accepting
+ })
+
+
+    await page.goto("https://www.w3schools.com/js/tryit.asp?filename=tryjs_confirm",{ waitUntil: 'domcontentloaded',timeout: 15000})
+    const pageTile = await page.title
+    console.log("page title is:" + pageTile)
+
+    //Handling frames
+    const frame= page.frameLocator('#iframeResult');
+    await frame.locator("//button[text()='Try it']").click();
+    //Assert the text after handling the Alert
+    const resultText = await frame.locator('#demo').textContent();
+    expect(resultText).toBe('You pressed OK!');
+    console.log("final is "+ resultText)
+})
+
